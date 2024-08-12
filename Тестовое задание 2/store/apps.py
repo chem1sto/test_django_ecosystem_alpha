@@ -8,7 +8,7 @@ class StoreConfig(AppConfig):
 
     default_auto_field = "django.db.models.BigAutoField"
     name = "store"
-    verbose = "Магазин продуктов"
+    verbose_name = "Магазин продуктов"
 
     def ready(self):
         """

@@ -2,6 +2,7 @@
 
 from core.constants import (
     BaseProductCategoryCfg,
+    ProductCategoryCfg,
     ProductCfg,
     ProductSubCategoryCfg,
 )
@@ -34,10 +35,12 @@ class BaseProductCategory(models.Model):
     )
     image = models.ImageField(
         upload_to=BaseProductCategoryCfg.IMAGE_UPLOAD_FOLDER,
+        verbose_name=BaseProductCategoryCfg.IMAGE_VERBOSE_NAME,
+        help_text=BaseProductCategoryCfg.IMAGE_HELP_TEXT,
     )
 
     class Meta:
-        """Мета-класс для абстрактной базовой модели."""
+        """Мета-класс для абстрактной базовой модели категорий продуктов."""
 
         abstract = True
 
@@ -54,6 +57,12 @@ class ProductCategory(BaseProductCategory):
     """
 
     pass
+
+    class Meta:
+        """Мета-класс для модели категорий продуктов."""
+
+        verbose_name = ProductCategoryCfg.VERBOSE_NAME
+        verbose_name_plural = ProductCategoryCfg.VERBOSE_NAME_PLURAL
 
 
 class ProductSubCategory(BaseProductCategory):
@@ -75,6 +84,8 @@ class ProductSubCategory(BaseProductCategory):
     )
     image = models.ImageField(
         upload_to=ProductSubCategoryCfg.IMAGE_UPLOAD_FOLDER,
+        verbose_name=ProductSubCategoryCfg.IMAGE_VERBOSE_NAME,
+        help_text=ProductSubCategoryCfg.IMAGE_HELP_TEXT,
     )
     product_category = models.ForeignKey(
         to=ProductCategory,
@@ -82,6 +93,12 @@ class ProductSubCategory(BaseProductCategory):
         verbose_name=ProductSubCategoryCfg.PRODUCT_CATEGORY_VERBOSE_NAME,
         help_text=ProductSubCategoryCfg.PRODUCT_CATEGORY_HELP_TEXT,
     )
+
+    class Meta:
+        """Мета-класс для модели подкатегорий продуктов."""
+
+        verbose_name = ProductSubCategoryCfg.VERBOSE_NAME
+        verbose_name_plural = ProductSubCategoryCfg.VERBOSE_NAME_PLURAL
 
 
 class Product(models.Model):
@@ -128,6 +145,8 @@ class Product(models.Model):
     )
     image = models.ImageField(
         upload_to=ProductCfg.IMAGE_UPLOAD_FOLDER,
+        verbose_name=ProductCfg.IMAGE_VERBOSE_NAME,
+        help_text=ProductCfg.IMAGE_HELP_TEXT,
     )
     thumbnail = ImageSpecField(
         source=ProductCfg.THUMBNAIL_SOURCE,
@@ -151,6 +170,12 @@ class Product(models.Model):
         format=ProductCfg.PREVIEW_FORMAT,
         options=ProductCfg.PREVIEW_OPTIONS,
     )
+
+    class Meta:
+        """Мета-класс для модели продуктов."""
+
+        verbose_name = ProductCfg.VERBOSE_NAME
+        verbose_name_plural = ProductCfg.VERBOSE_NAME_PLURAL
 
     def __str__(self):
         """Возвращает строковое представление объекта."""
