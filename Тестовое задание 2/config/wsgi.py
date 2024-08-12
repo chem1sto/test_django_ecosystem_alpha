@@ -1,16 +1,17 @@
 """
-WSGI config for Django_Ecosystem_Alpha_1 project.
+WSGI конфиг для проекта test_django_ecosystem_alpha.
 
-It exposes the WSGI callable as a module-level variable named ``application``.
+Он предоставляет вызываемый WSGI как переменную уровня модуля с именем
+ «application».
 
-For more information on this file, see
-https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/
+Дополнительная информация об этом файле доступна по ссылке
+https://docs.djangoproject.com/en/stable/howto/deployment/wsgi/
 """
 
 import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Django_Ecosystem_Alpha_1.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 application = get_wsgi_application()
