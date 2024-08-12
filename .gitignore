@@ -164,3 +164,6 @@ migrations/
 
 # static
 static/
+
+# media
+media/
