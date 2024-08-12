@@ -67,7 +67,7 @@
     source venv/scripts/activate
     ```
 3. Установить зависимости из файла requirements.txt:
-   ```
+   ```bash
    python3 -m pip install --upgrade pip
    pip install -r requirements.txt
    ```
@@ -83,7 +83,7 @@
     ```
 6. Для запуска проекта перейдите в папку с файлом manage.py и выполните команды:
    ```bash
-   cd ../test_django_ecosystem_alpha/Тестовое задание 2/src/ &&
+   cd ../test_django_ecosystem_alpha/'Тестовое задание 2'/src/ &&
    python manage.py makemigrations &&
    python manage.py migrate &&
    python manage.py collectstatic --noinput
