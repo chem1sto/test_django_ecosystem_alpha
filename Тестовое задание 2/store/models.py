@@ -25,6 +25,7 @@ class BaseProductCategory(models.Model):
     )
     slug = models.SlugField(
         max_length=BaseProductCategoryCfg.SLUG_MAX_LENGTH,
+        help_text=BaseProductCategoryCfg.SLUG_HELP_TEXT,
         allow_unicode=True,
         unique=True,
     )
@@ -32,6 +33,8 @@ class BaseProductCategory(models.Model):
         max_length=BaseProductCategoryCfg.DESCRIPTION_MAX_LENGTH,
         verbose_name=BaseProductCategoryCfg.DESCRIPTION_VERBOSE_NAME,
         help_text=BaseProductCategoryCfg.DESCRIPTION_HELP_TEXT,
+        blank=True,
+        null=True,
     )
     image = models.ImageField(
         upload_to=BaseProductCategoryCfg.IMAGE_UPLOAD_FOLDER,
@@ -123,6 +126,8 @@ class Product(models.Model):
         max_length=ProductCfg.DESCRIPTION_MAX_LENGTH,
         verbose_name=ProductCfg.DESCRIPTION_VERBOSE_NAME,
         help_text=ProductCfg.DESCRIPTION_HELP_TEXT,
+        blank=True,
+        null=True,
     )
     product_category = models.ForeignKey(
         to=ProductCategory,

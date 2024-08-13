@@ -6,8 +6,22 @@ from django.utils.html import format_html
 from store.models import Product, ProductCategory, ProductSubCategory
 
 
+class ImageThumbnailMixin:
+    """Миксин для вывода миниатюр изображений в админ-панели."""
+
+    def image_thumbnail(self, obj):
+        """Выводит миниатюру изображения в админ-панель."""
+        if obj.image:
+            return format_html(
+                "<img src='{}' width='40' height='40' />", obj.image.url
+            )
+        return "Нет изображения"
+
+    image_thumbnail.short_description = "Миниатюра"
+
+
 @admin.register(ProductCategory)
-class ProductCategoryAdmin(admin.ModelAdmin):
+class ProductCategoryAdmin(ImageThumbnailMixin, admin.ModelAdmin):
     """
     Админ-панель для модели ProductCategory.
 
@@ -18,19 +32,9 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     prepopulated_fields = {"slug": ("title",)}
 
-    def image_thumbnail(self, obj):
-        """Выводит миниатюру категории товара в админ-панель."""
-        if obj.image:
-            return format_html(
-                "<img src='{}' width='40' height='40' />", obj.image.url
-            )
-        return "Нет изображения"
-
-    image_thumbnail.short_description = "Миниатюра"
-
 
 @admin.register(ProductSubCategory)
-class ProductSubCategoryAdmin(admin.ModelAdmin):
+class ProductSubCategoryAdmin(ImageThumbnailMixin, admin.ModelAdmin):
     """
     Админ-панель для модели ProductSubCategory.
 
@@ -49,16 +53,6 @@ class ProductSubCategoryAdmin(admin.ModelAdmin):
     list_filter = ("product_category",)
     prepopulated_fields = {"slug": ("title",)}
 
-    def image_thumbnail(self, obj):
-        """Выводит миниатюру подкатегории товара в админ-панель."""
-        if obj.image:
-            return format_html(
-                "<img src='{}' width='40' height='40' />", obj.image.url
-            )
-        return "Нет изображения"
-
-    image_thumbnail.short_description = "Миниатюра"
-
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -72,6 +66,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "slug",
+        "description",
         "product_category",
         "product_subcategory",
         "price_with_currency",

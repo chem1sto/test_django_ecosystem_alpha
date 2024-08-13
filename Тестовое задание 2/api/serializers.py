@@ -1,7 +1,7 @@
 """Модуль для работы с сериалайзерами приложения api."""
 
 from rest_framework import serializers
-from store.models import ProductCategory, ProductSubCategory
+from store.models import Product, ProductCategory, ProductSubCategory
 
 
 class ProductSubCategorySerializer(serializers.ModelSerializer):
@@ -53,3 +53,30 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
         model = ProductCategory
         fields = ["title", "slug", "product_subcategories"]
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели Product.
+
+    Поля:
+    - title: Название продукта.
+    - slug: Уникальный идентификатор продукта.
+    - product_category: Категория продукта.
+    - product_subcategory: Подкатегория продукта.
+    - description: Описание продукта.
+    - price: Цена продукта.
+    """
+
+    class Meta:
+        """
+        Мета-класс для ProductSerializer.
+
+        Атрибуты:
+        - model: Модель Product.
+        - exclude: Поля модели, которые не будут сериализованы (id,
+        description).
+        """
+
+        model = Product
+        exclude = ("id", "description")
