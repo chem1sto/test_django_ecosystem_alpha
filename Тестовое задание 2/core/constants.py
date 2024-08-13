@@ -131,3 +131,17 @@ class ProductCfg:
     PREVIEW_PROCESSORS_WIDTH = 400
     PREVIEW_PROCESSORS_HEIGHT = 400
     PREVIEW_OPTIONS = {"quality": 75}
+
+
+class CartCfg:
+    """Настройки для модели Cart."""
+
+    CART_STR = "Корзина пользователя {username}"
+
+
+class CartItemCfg:
+    """Настройки для модели CartItem."""
+
+    CART_ITEM_STR = "{quantity} x {product} in {cart}"
+    CART_ITEM_RELATED_NAME = "items"
+    CART_ITEM_DEFAULT_QUANTITY = 1

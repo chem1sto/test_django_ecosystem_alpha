@@ -2,10 +2,13 @@
 
 from core.constants import (
     BaseProductCategoryCfg,
+    CartCfg,
+    CartItemCfg,
     ProductCategoryCfg,
     ProductCfg,
     ProductSubCategoryCfg,
 )
+from django.contrib.auth.models import User
 from django.db import models
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
@@ -48,7 +51,7 @@ class BaseProductCategory(models.Model):
         abstract = True
 
     def __str__(self):
-        """Возвращает строковое представление объекта."""
+        """Возвращает строковое представление объекта категории."""
         return self.title
 
 
@@ -187,5 +190,37 @@ class Product(models.Model):
         verbose_name_plural = ProductCfg.VERBOSE_NAME_PLURAL
 
     def __str__(self):
-        """Возвращает строковое представление объекта."""
+        """Возвращает строковое представление объекта продукта."""
         return self.title
+
+
+class Cart(models.Model):
+    """Модель для корзины пользователя."""
+
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        """Возвращает строковое представление объекта корзины."""
+        return CartCfg.CART_STR.format(username={self.user})
+
+
+class CartItem(models.Model):
+    """Модель для элементов корзины."""
+
+    cart = models.ForeignKey(
+        to=Cart,
+        related_name=CartItemCfg.CART_ITEM_RELATED_NAME,
+        on_delete=models.CASCADE,
+    )
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(
+        default=CartItemCfg.CART_ITEM_DEFAULT_QUANTITY
+    )
+
+    def __str__(self):
+        """Возвращает строковое представление объекта элемента корзины."""
+        return CartItemCfg.CART_ITEM_STR.format(
+            quantoty=self.quantity, product=self.product, cart=self.cart
+        )
