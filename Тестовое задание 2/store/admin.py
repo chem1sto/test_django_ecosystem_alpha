@@ -1,5 +1,6 @@
 """Настройки админ-панелей для приложения Store."""
 
+from core.constants import AdminStoreCfg
 from django.contrib import admin
 from django.utils.formats import localize
 from django.utils.html import format_html
@@ -13,11 +14,13 @@ class ImageThumbnailMixin:
         """Выводит миниатюру изображения в админ-панель."""
         if obj.image:
             return format_html(
-                "<img src='{}' width='40' height='40' />", obj.image.url
+                AdminStoreCfg.IMAGE_THUMBNAIL_FORMAT_STRING, obj.image.url
             )
-        return "Нет изображения"
+        return AdminStoreCfg.IMAGE_THUMBNAIL_NO_IMAGE
 
-    image_thumbnail.short_description = "Миниатюра"
+    image_thumbnail.short_description = (
+        AdminStoreCfg.IMAGE_THUMBNAIL_SHORT_DESCRIPTION
+    )
 
 
 @admin.register(ProductCategory)
@@ -28,9 +31,11 @@ class ProductCategoryAdmin(ImageThumbnailMixin, admin.ModelAdmin):
     Настраивает отображение, поиск и автоматическое заполнение поля slug.
     """
 
-    list_display = ("title", "slug", "description", "image_thumbnail")
-    search_fields = ("title",)
-    prepopulated_fields = {"slug": ("title",)}
+    list_display = AdminStoreCfg.PRODUCT_CATEGORY_ADMIN_LIST_DISPLAY
+    search_fields = AdminStoreCfg.PRODUCT_CATEGORY_ADMIN_SEARCH_FIELDS
+    prepopulated_fields = (
+        AdminStoreCfg.PRODUCT_CATEGORY_ADMIN_PREPOPULATED_FIELDS
+    )
 
 
 @admin.register(ProductSubCategory)
@@ -42,16 +47,12 @@ class ProductSubCategoryAdmin(ImageThumbnailMixin, admin.ModelAdmin):
     поля slug.
     """
 
-    list_display = (
-        "title",
-        "slug",
-        "description",
-        "product_category",
-        "image_thumbnail",
+    list_display = AdminStoreCfg.PRODUCT_SUBCATEGORY_ADMIN_LIST_DISPLAY
+    search_fields = AdminStoreCfg.PRODUCT_SUBCATEGORY_ADMIN_SEARCH_FIELDS
+    list_filter = AdminStoreCfg.PRODUCT_SUBCATEGORY_ADMIN_LIST_FILTER
+    prepopulated_fields = (
+        AdminStoreCfg.PRODUCT_SUBCATEGORY_ADMIN_PREPOPULATED_FIELDS
     )
-    search_fields = ("title", "description")
-    list_filter = ("product_category",)
-    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(Product)
@@ -63,33 +64,31 @@ class ProductAdmin(admin.ModelAdmin):
     поля slug.
     """
 
-    list_display = (
-        "title",
-        "slug",
-        "description",
-        "product_category",
-        "product_subcategory",
-        "price_with_currency",
-        "image_thumbnail",
-    )
-    search_fields = ("title", "description")
-    list_filter = ("product_category", "product_subcategory")
-    prepopulated_fields = {"slug": ("title",)}
+    list_display = AdminStoreCfg.PRODUCT_ADMIN_LIST_DISPLAY
+    search_fields = AdminStoreCfg.PRODUCT_ADMIN_SEARCH_FIELDS
+    list_filter = AdminStoreCfg.PRODUCT_ADMIN_LIST_FILTER
+    prepopulated_fields = AdminStoreCfg.PRODUCT_ADMIN_PREPOPULATED_FIELDS
 
     def price_with_currency(self, obj):
         """Выводит стоимость продукта с указанием валюты в админ-панель."""
         if obj.price:
-            return "{} руб.".format(localize(obj.price))
-        return "Нет цены"
+            return AdminStoreCfg.PRODUCT_PRICE_WITH_CURRENCY.format(
+                price=localize(obj.price)
+            )
+        return AdminStoreCfg.PRODUCT_NO_PRICE
 
-    price_with_currency.short_description = "Стоимость"
+    price_with_currency.short_description = (
+        AdminStoreCfg.PRODUCT_PRICE_WITH_CURRENCY_SHORT_DESCRIPTION
+    )
 
     def image_thumbnail(self, obj):
         """Выводит миниатюру подкатегории товара в админ-панель."""
         if obj.thumbnail:
             return format_html(
-                "<img src='{}' width='40' height='40' />", obj.thumbnail.url
+                AdminStoreCfg.IMAGE_THUMBNAIL_FORMAT_STRING, obj.thumbnail.url
             )
-        return "Нет изображения"
+        return AdminStoreCfg.IMAGE_THUMBNAIL_NO_IMAGE
 
-    image_thumbnail.short_description = "Миниатюра"
+    image_thumbnail.short_description = (
+        AdminStoreCfg.IMAGE_THUMBNAIL_SHORT_DESCRIPTION
+    )

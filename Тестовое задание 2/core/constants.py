@@ -1,6 +1,50 @@
 """Константы и настройки для моделей проекта."""
 
 
+class AdminStoreCfg:
+    """Настройки для админ-панели Магазина Продуктов."""
+
+    IMAGE_THUMBNAIL_FORMAT_STRING = "<img src='{}' width='40' height='40' />"
+    IMAGE_THUMBNAIL_NO_IMAGE = "Нет изображения"
+    IMAGE_THUMBNAIL_SHORT_DESCRIPTION = "Миниатюра"
+    PRODUCT_CATEGORY_ADMIN_LIST_DISPLAY = (
+        "title",
+        "slug",
+        "description",
+        "image_thumbnail",
+    )
+    PRODUCT_CATEGORY_ADMIN_SEARCH_FIELDS = ("title",)
+    PRODUCT_CATEGORY_ADMIN_PREPOPULATED_FIELDS = {"slug": ("title",)}
+    PRODUCT_SUBCATEGORY_ADMIN_LIST_DISPLAY = (
+        "title",
+        "slug",
+        "description",
+        "product_category",
+        "image_thumbnail",
+    )
+    PRODUCT_SUBCATEGORY_ADMIN_SEARCH_FIELDS = ("title", "description")
+    PRODUCT_SUBCATEGORY_ADMIN_LIST_FILTER = ("product_category",)
+    PRODUCT_SUBCATEGORY_ADMIN_PREPOPULATED_FIELDS = {"slug": ("title",)}
+    PRODUCT_ADMIN_LIST_DISPLAY = (
+        "title",
+        "slug",
+        "description",
+        "product_category",
+        "product_subcategory",
+        "price_with_currency",
+        "image_thumbnail",
+    )
+    PRODUCT_ADMIN_SEARCH_FIELDS = ("title", "description")
+    PRODUCT_ADMIN_LIST_FILTER = ("product_category", "product_subcategory")
+    PRODUCT_ADMIN_PREPOPULATED_FIELDS = {"slug": ("title",)}
+    PRODUCT_PRICE_WITH_CURRENCY = "{price} руб."
+    PRODUCT_NO_PRICE = "Нет цены"
+    PRODUCT_PRICE_WITH_CURRENCY_SHORT_DESCRIPTION = "Стоимость"
+    PRODUCT_IMAGE_THUMBNAIL_FORMAT_STRING = (
+        "<img src='{}' width='40' height='40' />"
+    )
+
+
 class BaseProductCategoryCfg:
     """Настройки для абстрактной модели BaseProductCategory."""
 

@@ -1,6 +1,8 @@
 """Модуль для работы с сериалайзерами приложения api."""
 
+from django.conf import settings
 from rest_framework import serializers
+from rest_framework.request import Request
 from store.models import Product, ProductCategory, ProductSubCategory
 
 
@@ -52,7 +54,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         """
 
         model = ProductCategory
-        fields = ["title", "slug", "product_subcategories"]
+        fields = ("title", "slug", "product_subcategories")
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -64,12 +66,13 @@ class ProductSerializer(serializers.ModelSerializer):
     - slug: Уникальный идентификатор продукта.
     - product_category: Категория продукта.
     - product_subcategory: Подкатегория продукта.
-    - description: Описание продукта.
     - price: Цена продукта.
+    - images: Список URL-адресов изображений продукта.
     """
 
     product_category = serializers.StringRelatedField()
     product_subcategory = serializers.StringRelatedField()
+    images = serializers.SerializerMethodField()
 
     class Meta:
         """
@@ -77,9 +80,36 @@ class ProductSerializer(serializers.ModelSerializer):
 
         Атрибуты:
         - model: Модель Product.
-        - exclude: Поля модели, которые не будут сериализованы (id,
-        description).
+        - fields: Поля модели, которые будут сериализованы (title, slug,
+        product_category, product_subcategory, price, images).
         """
 
         model = Product
-        exclude = ("id", "description")
+        fields = (
+            "title",
+            "slug",
+            "product_category",
+            "product_subcategory",
+            "price",
+            "images",
+        )
+
+    def get_images(self, obj: Product) -> list:
+        """
+        Возвращает список URL-адресов изображений продукта.
+
+        Параметры:
+            obj (Product): Экземпляр модели Product.
+
+        Возвращает:
+            list: Список URL-адресов изображений.
+        """
+        request = self.context.get("request")
+        if not isinstance(request, Request):
+            return []
+        base_url = request.build_absolute_uri(settings.MEDIA_URL)
+        return [
+            base_url + str(obj.image),
+            base_url + str(obj.thumbnail),
+            base_url + str(obj.preview),
+        ]
