@@ -8,7 +8,7 @@ from store.models import Product, ProductCategory
 
 class ProductCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
-    Предоставляет операции чтения для модели ProductCategory.
+    Предоставляет операцию чтения для модели ProductCategory.
 
     Операции:
     - просмотр списка категорий продуктов;
@@ -23,7 +23,7 @@ class ProductCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class ProductViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
-    Предоставляет операции чтения для модели Product.
+    Предоставляет операцию чтения для модели Product.
 
     Операции:
     - просмотр списка продуктов;

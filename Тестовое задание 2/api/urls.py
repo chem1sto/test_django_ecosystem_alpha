@@ -11,9 +11,11 @@ from rest_framework.routers import DefaultRouter
 router_v1 = DefaultRouter()
 
 router_v1.register(
-    r"product_category", ProductCategoryViewSet, basename="product_category"
+    r"product_categories",
+    ProductCategoryViewSet,
+    basename="product_categories",
 )
-router_v1.register(r"product", ProductViewSet, basename="product")
+router_v1.register(r"products", ProductViewSet, basename="products")
 
 urlpatterns = [
     path("v1/", include(router_v1.urls)),

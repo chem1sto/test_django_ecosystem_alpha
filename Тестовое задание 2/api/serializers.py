@@ -68,6 +68,9 @@ class ProductSerializer(serializers.ModelSerializer):
     - price: Цена продукта.
     """
 
+    product_category = serializers.StringRelatedField()
+    product_subcategory = serializers.StringRelatedField()
+
     class Meta:
         """
         Мета-класс для ProductSerializer.
