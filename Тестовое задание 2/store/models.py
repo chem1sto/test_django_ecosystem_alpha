@@ -142,6 +142,8 @@ class Product(models.Model):
         max_digits=ProductCfg.PRICE_MAX_DIGITS,
         decimal_places=ProductCfg.PRICE_DECIMAL_PLACES,
         default=ProductCfg.PRICE_DEFAULT,
+        verbose_name=ProductCfg.PRICE_VERBOSE_NAME,
+        help_text=ProductCfg.PRICE_HELP_TEXT,
     )
     image = models.ImageField(
         upload_to=ProductCfg.IMAGE_UPLOAD_FOLDER,

@@ -21,15 +21,15 @@ class BaseProductCategoryCfg:
 class ProductCategoryCfg:
     """Настройки для модели Product."""
 
-    VERBOSE_NAME = "Категория продуктов"
-    VERBOSE_NAME_PLURAL = "Категории продуктов"
+    VERBOSE_NAME = "категория продуктов"
+    VERBOSE_NAME_PLURAL = "категории продуктов"
 
 
 class ProductSubCategoryCfg:
     """Настройки для модели ProductSubCategory."""
 
-    VERBOSE_NAME = "Подкатегория продуктов"
-    VERBOSE_NAME_PLURAL = "Подкатегории продуктов"
+    VERBOSE_NAME = "подкатегория продуктов"
+    VERBOSE_NAME_PLURAL = "подкатегории продуктов"
     TITLE_MAX_LENGTH = 255
     TITLE_VERBOSE_NAME = "Наименование подкатегории продукта"
     TITLE_HELP_TEXT = "Введите наименование подкатегории продукта"
@@ -50,8 +50,8 @@ class ProductSubCategoryCfg:
 class ProductCfg:
     """Настройки для модели Product."""
 
-    VERBOSE_NAME = "Продукт"
-    VERBOSE_NAME_PLURAL = "Продукты"
+    VERBOSE_NAME = "продукт"
+    VERBOSE_NAME_PLURAL = "продукты"
     TITLE_MAX_LENGTH = 255
     TITLE_VERBOSE_NAME = "Наименование продукта"
     TITLE_HELP_TEXT = "Введите наименование продукта"
@@ -70,6 +70,8 @@ class ProductCfg:
     PRICE_MAX_DIGITS = 10
     PRICE_DECIMAL_PLACES = 2
     PRICE_DEFAULT = 0.00
+    PRICE_VERBOSE_NAME = "Стоимость продукта"
+    PRICE_HELP_TEXT = "Введите стоимость продукта"
     IMAGE_UPLOAD_FOLDER = "products/"
     IMAGE_VERBOSE_NAME = "Изображение для продукта"
     IMAGE_HELP_TEXT = "Выберите изображение для продукта"
