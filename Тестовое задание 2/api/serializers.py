@@ -39,9 +39,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
     категорией.
     """
 
-    product_subcategories = ProductSubCategorySerializer(
-        many=True, read_only=True
-    )
+    subcategories = ProductSubCategorySerializer(many=True, read_only=True)
 
     class Meta:
         """
@@ -54,7 +52,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         """
 
         model = ProductCategory
-        fields = ("title", "slug", "product_subcategories")
+        fields = ("title", "slug", "subcategories")
 
 
 class ProductSerializer(serializers.ModelSerializer):

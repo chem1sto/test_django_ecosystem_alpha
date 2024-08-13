@@ -64,6 +64,7 @@ class ProductCategory(BaseProductCategory):
     class Meta:
         """Мета-класс для модели категорий продуктов."""
 
+        ordering = ProductCategoryCfg.PRODUCT_CATEGORY_ORDER
         verbose_name = ProductCategoryCfg.VERBOSE_NAME
         verbose_name_plural = ProductCategoryCfg.VERBOSE_NAME_PLURAL
 
@@ -93,6 +94,7 @@ class ProductSubCategory(BaseProductCategory):
     product_category = models.ForeignKey(
         to=ProductCategory,
         on_delete=models.CASCADE,
+        related_name=ProductSubCategoryCfg.PRODUCT_CATEGORY_RELATED_NAME,
         verbose_name=ProductSubCategoryCfg.PRODUCT_CATEGORY_VERBOSE_NAME,
         help_text=ProductSubCategoryCfg.PRODUCT_CATEGORY_HELP_TEXT,
     )

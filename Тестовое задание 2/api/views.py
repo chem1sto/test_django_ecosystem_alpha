@@ -2,6 +2,7 @@
 
 from api.pagination import ProductCategoryPagination, ProductPagination
 from api.serializers import ProductCategorySerializer, ProductSerializer
+from core.constants import ProductSubCategoryCfg
 from rest_framework import mixins, viewsets
 from store.models import Product, ProductCategory
 
@@ -11,12 +12,14 @@ class ProductCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     Предоставляет операцию чтения для модели ProductCategory.
 
     Операции:
-    - просмотр списка категорий продуктов;
+    - просмотр списка категорий продуктов с подкатегориями;
 
     Пагинация по умолчанию выводит по 5 категорий продуктов на странице.
     """
 
-    queryset = ProductCategory.objects.all()
+    queryset = ProductCategory.objects.all().prefetch_related(
+        ProductSubCategoryCfg.PRODUCT_CATEGORY_RELATED_NAME
+    )
     serializer_class = ProductCategorySerializer
     pagination_class = ProductCategoryPagination
 

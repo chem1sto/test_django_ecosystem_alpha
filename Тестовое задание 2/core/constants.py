@@ -69,6 +69,7 @@ class BaseProductCategoryCfg:
 class ProductCategoryCfg:
     """Настройки для модели Product."""
 
+    PRODUCT_CATEGORY_ORDER = ["title"]
     VERBOSE_NAME = "категория продуктов"
     VERBOSE_NAME_PLURAL = "категории продуктов"
 
@@ -89,6 +90,7 @@ class ProductSubCategoryCfg:
     IMAGE_UPLOAD_FOLDER = "products_subcategories/"
     IMAGE_VERBOSE_NAME = "Изображение для подкатегории продуктов"
     IMAGE_HELP_TEXT = "Загрузите изображение для подкатегории продуктов"
+    PRODUCT_CATEGORY_RELATED_NAME = "subcategories"
     PRODUCT_CATEGORY_VERBOSE_NAME = "Категория продукта"
     PRODUCT_CATEGORY_HELP_TEXT = "Выберите категорию продукта"
 
