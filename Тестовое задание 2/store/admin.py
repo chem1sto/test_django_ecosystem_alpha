@@ -22,7 +22,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
         """Выводит миниатюру категории товара в админ-панель."""
         if obj.image:
             return format_html(
-                "<img src='{}' width='50' height='50' />", obj.image.url
+                "<img src='{}' width='40' height='40' />", obj.image.url
             )
         return "Нет изображения"
 
@@ -38,10 +38,26 @@ class ProductSubCategoryAdmin(admin.ModelAdmin):
     поля slug.
     """
 
-    list_display = ("title", "slug", "description", "product_category")
+    list_display = (
+        "title",
+        "slug",
+        "description",
+        "product_category",
+        "image_thumbnail",
+    )
     search_fields = ("title", "description")
     list_filter = ("product_category",)
     prepopulated_fields = {"slug": ("title",)}
+
+    def image_thumbnail(self, obj):
+        """Выводит миниатюру подкатегории товара в админ-панель."""
+        if obj.image:
+            return format_html(
+                "<img src='{}' width='40' height='40' />", obj.image.url
+            )
+        return "Нет изображения"
+
+    image_thumbnail.short_description = "Миниатюра"
 
 
 @admin.register(Product)
@@ -59,6 +75,7 @@ class ProductAdmin(admin.ModelAdmin):
         "product_category",
         "product_subcategory",
         "price_with_currency",
+        "image_thumbnail",
     )
     search_fields = ("title", "description")
     list_filter = ("product_category", "product_subcategory")
@@ -71,3 +88,13 @@ class ProductAdmin(admin.ModelAdmin):
         return "Нет цены"
 
     price_with_currency.short_description = "Стоимость"
+
+    def image_thumbnail(self, obj):
+        """Выводит миниатюру подкатегории товара в админ-панель."""
+        if obj.thumbnail:
+            return format_html(
+                "<img src='{}' width='40' height='40' />", obj.thumbnail.url
+            )
+        return "Нет изображения"
+
+    image_thumbnail.short_description = "Миниатюра"
