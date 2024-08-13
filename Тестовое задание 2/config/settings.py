@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "imagekit",
+    "drf_yasg",
     "core.apps.CoreConfig",
     "store.apps.StoreConfig",
     "users.apps.UsersConfig",
