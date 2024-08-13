@@ -203,7 +203,7 @@ class Cart(models.Model):
 
     def __str__(self):
         """Возвращает строковое представление объекта корзины."""
-        return CartCfg.CART_STR.format(username={self.user})
+        return CartCfg.CART_STR.format(username=self.user.username)
 
 
 class CartItem(models.Model):

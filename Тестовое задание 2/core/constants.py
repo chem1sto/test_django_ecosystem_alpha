@@ -1,4 +1,5 @@
 """Константы и настройки для моделей проекта."""
+REQUEST = "request"
 
 
 class AdminStoreCfg:
@@ -66,33 +67,18 @@ class BaseProductCategoryCfg:
     IMAGE_HELP_TEXT = "Загрузите изображение для категории продукта"
 
 
-class ProductCategoryCfg:
-    """Настройки для модели Product."""
+class CartCfg:
+    """Настройки для модели Cart."""
 
-    PRODUCT_CATEGORY_ORDER = ["title"]
-    VERBOSE_NAME = "категория продуктов"
-    VERBOSE_NAME_PLURAL = "категории продуктов"
+    CART_STR = "Корзина пользователя {username}"
 
 
-class ProductSubCategoryCfg:
-    """Настройки для модели ProductSubCategory."""
+class CartItemCfg:
+    """Настройки для модели CartItem."""
 
-    VERBOSE_NAME = "подкатегория продуктов"
-    VERBOSE_NAME_PLURAL = "подкатегории продуктов"
-    TITLE_MAX_LENGTH = 255
-    TITLE_VERBOSE_NAME = "Наименование подкатегории продукта"
-    TITLE_HELP_TEXT = "Введите наименование подкатегории продукта"
-    DESCRIPTION_MAX_LENGTH = 5000
-    DESCRIPTION_VERBOSE_NAME = "Описание подкатегории продукта"
-    DESCRIPTION_HELP_TEXT = (
-        f"Введите описание продукта до {DESCRIPTION_MAX_LENGTH} символов"
-    )
-    IMAGE_UPLOAD_FOLDER = "products_subcategories/"
-    IMAGE_VERBOSE_NAME = "Изображение для подкатегории продуктов"
-    IMAGE_HELP_TEXT = "Загрузите изображение для подкатегории продуктов"
-    PRODUCT_CATEGORY_RELATED_NAME = "subcategories"
-    PRODUCT_CATEGORY_VERBOSE_NAME = "Категория продукта"
-    PRODUCT_CATEGORY_HELP_TEXT = "Выберите категорию продукта"
+    CART_ITEM_STR = "{quantity} x {product} in {cart}"
+    CART_ITEM_RELATED_NAME = "items"
+    CART_ITEM_DEFAULT_QUANTITY = 1
 
 
 class ProductCfg:
@@ -133,15 +119,51 @@ class ProductCfg:
     PREVIEW_OPTIONS = {"quality": 75}
 
 
-class CartCfg:
-    """Настройки для модели Cart."""
+class ProductCategoryCfg:
+    """Настройки для модели Product."""
 
-    CART_STR = "Корзина пользователя {username}"
+    PRODUCT_CATEGORY_ORDER = ["title"]
+    VERBOSE_NAME = "категория продуктов"
+    VERBOSE_NAME_PLURAL = "категории продуктов"
 
 
-class CartItemCfg:
-    """Настройки для модели CartItem."""
+class ProductSubCategoryCfg:
+    """Настройки для модели ProductSubCategory."""
 
-    CART_ITEM_STR = "{quantity} x {product} in {cart}"
-    CART_ITEM_RELATED_NAME = "items"
-    CART_ITEM_DEFAULT_QUANTITY = 1
+    VERBOSE_NAME = "подкатегория продуктов"
+    VERBOSE_NAME_PLURAL = "подкатегории продуктов"
+    TITLE_MAX_LENGTH = 255
+    TITLE_VERBOSE_NAME = "Наименование подкатегории продукта"
+    TITLE_HELP_TEXT = "Введите наименование подкатегории продукта"
+    DESCRIPTION_MAX_LENGTH = 5000
+    DESCRIPTION_VERBOSE_NAME = "Описание подкатегории продукта"
+    DESCRIPTION_HELP_TEXT = (
+        f"Введите описание продукта до {DESCRIPTION_MAX_LENGTH} символов"
+    )
+    IMAGE_UPLOAD_FOLDER = "products_subcategories/"
+    IMAGE_VERBOSE_NAME = "Изображение для подкатегории продуктов"
+    IMAGE_HELP_TEXT = "Загрузите изображение для подкатегории продуктов"
+    PRODUCT_CATEGORY_RELATED_NAME = "subcategories"
+    PRODUCT_CATEGORY_VERBOSE_NAME = "Категория продукта"
+    PRODUCT_CATEGORY_HELP_TEXT = "Выберите категорию продукта"
+
+
+class SerializersCfg:
+    """Настройки для сериалайзеров приложения api."""
+
+    PRODUCT_SUBCATEGORY_SERIALIZER_META_FIELDS = ("title", "slug")
+    PRODUCT_CATEGORY_SERIALIZER_META_FIELDS = (
+        "title",
+        "slug",
+        "subcategories",
+    )
+    PRODUCT_SERIALIZER_META_FIELDS = (
+        "title",
+        "slug",
+        "product_category",
+        "product_subcategory",
+        "price",
+        "images",
+    )
+    CART_ITEM_SERIALIZER_META_FIELDS = ("product", "quantity")
+    CART_SERIALIZER_META_FIELDS = ("user", "items")

@@ -1,9 +1,16 @@
 """Модуль для работы с сериалайзерами приложения api."""
 
+from core.constants import REQUEST, SerializersCfg
 from django.conf import settings
 from rest_framework import serializers
 from rest_framework.request import Request
-from store.models import Product, ProductCategory, ProductSubCategory
+from store.models import (
+    Cart,
+    CartItem,
+    Product,
+    ProductCategory,
+    ProductSubCategory,
+)
 
 
 class ProductSubCategorySerializer(serializers.ModelSerializer):
@@ -25,7 +32,7 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
         """
 
         model = ProductSubCategory
-        fields = ["title", "slug"]
+        fields = SerializersCfg.PRODUCT_SUBCATEGORY_SERIALIZER_META_FIELDS
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -52,7 +59,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         """
 
         model = ProductCategory
-        fields = ("title", "slug", "subcategories")
+        fields = SerializersCfg.PRODUCT_CATEGORY_SERIALIZER_META_FIELDS
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -83,14 +90,7 @@ class ProductSerializer(serializers.ModelSerializer):
         """
 
         model = Product
-        fields = (
-            "title",
-            "slug",
-            "product_category",
-            "product_subcategory",
-            "price",
-            "images",
-        )
+        fields = SerializersCfg.PRODUCT_SERIALIZER_META_FIELDS
 
     def get_images(self, obj: Product) -> list:
         """
@@ -102,7 +102,7 @@ class ProductSerializer(serializers.ModelSerializer):
         Возвращает:
             list: Список URL-адресов изображений.
         """
-        request = self.context.get("request")
+        request = self.context.get(REQUEST)
         if not isinstance(request, Request):
             return []
         base_url = request.build_absolute_uri(settings.MEDIA_URL)
@@ -111,3 +111,53 @@ class ProductSerializer(serializers.ModelSerializer):
             base_url + str(obj.thumbnail),
             base_url + str(obj.preview),
         ]
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели CartItem.
+
+    Поля:
+    - product: Название продукта.
+    - quantity: Количество продукта в корзине.
+    """
+
+    product = serializers.CharField(source="product.title")
+    quantity = serializers.IntegerField(default=1)
+
+    class Meta:
+        """
+        Мета-класс для CartItemSerializer.
+
+        Атрибуты:
+        - model: Модель CartItem.
+        - fields: Поля модели, которые будут сериализованы (product, quantity).
+        """
+
+        model = CartItem
+        fields = SerializersCfg.CART_ITEM_SERIALIZER_META_FIELDS
+
+
+class CartSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели Cart.
+
+    Поля:
+    - user: Имя пользователя.
+    - items: Список элементов корзины.
+    """
+
+    user = serializers.StringRelatedField(read_only=True)
+    items = CartItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        """
+        Мета-класс для CartSerializer.
+
+        Атрибуты:
+        - model: Модель Cart.
+        - fields: Поля модели, которые будут сериализованы (user, items).
+        """
+
+        model = Cart
+        fields = SerializersCfg.CART_SERIALIZER_META_FIELDS
