@@ -14,6 +14,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from store.models import Cart, CartItem, Product, ProductCategory
 
@@ -65,7 +66,7 @@ class CartViewSet(viewsets.ViewSet):
 
     permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
+    def get_queryset(self) -> Cart:
         """
         Возвращает корзину текущего пользователя.
 
@@ -76,9 +77,11 @@ class CartViewSet(viewsets.ViewSet):
         """
         return Cart.objects.get_or_create(user=self.request.user)[0]
 
-    def list(self, request):
+    def list(self, request: Request) -> Response:
         """
         Возвращает содержимое корзины текущего пользователя.
+
+        Возвращает также подсчёт количества товара и сумму их стоимости.
 
         Возвращает:
             Response: Сериализованное содержимое корзины.
@@ -88,7 +91,7 @@ class CartViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     @staticmethod
-    def get_product(product_title):
+    def get_product(product_title: str) -> Product | ValidationError:
         """
         Возвращает продукт по его наименованию.
 
@@ -113,7 +116,9 @@ class CartViewSet(viewsets.ViewSet):
             )
 
     @staticmethod
-    def get_cart_item(cart, product):
+    def get_cart_item(
+        cart: Cart, product: Product
+    ) -> CartItem | ValidationError:
         """
         Возвращает элемент корзины по корзине и продукту.
 
@@ -142,7 +147,7 @@ class CartViewSet(viewsets.ViewSet):
         request_body=CartItemSerializer,
     )
     @action(detail=False, methods=ViewsCfg.ADD_ITEM_HTTP_METHODS)
-    def add_item(self, request):
+    def add_item(self, request: Request) -> Response:
         """
         Добавляет товар в корзину текущего пользователя.
 
@@ -171,7 +176,7 @@ class CartViewSet(viewsets.ViewSet):
         request_body=ShortCartItemSerializer,
     )
     @action(detail=False, methods=ViewsCfg.REMOVE_ITEM_HTTP_METHODS)
-    def remove_item(self, request):
+    def remove_item(self, request: Request) -> Response:
         """
         Удаляет товар из корзины текущего пользователя.
 
@@ -194,7 +199,7 @@ class CartViewSet(viewsets.ViewSet):
         request_body=CartItemSerializer,
     )
     @action(detail=False, methods=ViewsCfg.UPDATE_ITEM_HTTP_METHODS)
-    def update_item(self, request):
+    def update_item(self, request: Request) -> Response:
         """
         Обновляет количество товара в корзине текущего пользователя.
 
@@ -212,5 +217,18 @@ class CartViewSet(viewsets.ViewSet):
         quantity = request.data.get(ViewsCfg.QUANTITY)
         cart_item.quantity = quantity
         cart_item.save()
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=ViewsCfg.CLEAR_CART_HTTP_METHODS)
+    def clear_cart(self, request: Request) -> Response:
+        """
+        Полностью очищает корзину текущего пользователя.
+
+        Возвращает:
+            Response: Сериализованное содержимое пустой корзины.
+        """
+        cart = self.get_queryset()
+        cart.items.all().delete()
         serializer = CartSerializer(cart)
         return Response(serializer.data)

@@ -78,7 +78,7 @@ class CartItemCfg:
 
     CART_ITEM_STR = "{quantity} x {product} in {cart}"
     CART_ITEM_RELATED_NAME = "items"
-    CART_ITEM_DEFAULT_QUANTITY = 1
+    CART_ITEM_DEFAULT_QUANTITY = 0
 
 
 class ProductCfg:
@@ -183,6 +183,7 @@ class ViewsCfg:
     ADD_ITEM_HTTP_METHODS = ("post",)
     REMOVE_ITEM_HTTP_METHODS = ("delete",)
     UPDATE_ITEM_HTTP_METHODS = ("patch",)
+    CLEAR_CART_HTTP_METHODS = ("delete",)
     PRODUCT = "product"
     QUANTITY = "quantity"
     QUANTITY_DEFAULT_VALUE = 1
