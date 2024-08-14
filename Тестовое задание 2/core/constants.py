@@ -169,7 +169,12 @@ class SerializersCfg:
     )
     CART_ITEM_SERIALIZER_META_FIELDS = ("product", "quantity")
     SHORT_CART_ITEM_SERIALIZER_META_FIELDS = ("product",)
-    CART_SERIALIZER_META_FIELDS = ("user", "items")
+    CART_SERIALIZER_META_FIELDS = (
+        "user",
+        "items",
+        "total_quantity",
+        "total_price",
+    )
 
 
 class ViewsCfg:

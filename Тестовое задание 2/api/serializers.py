@@ -174,6 +174,8 @@ class CartSerializer(serializers.ModelSerializer):
 
     user = serializers.StringRelatedField(read_only=True)
     items = CartItemSerializer(many=True, read_only=True)
+    total_quantity = serializers.SerializerMethodField()
+    total_price = serializers.SerializerMethodField()
 
     class Meta:
         """
@@ -181,8 +183,37 @@ class CartSerializer(serializers.ModelSerializer):
 
         Атрибуты:
         - model: Модель Cart.
-        - fields: Поля модели, которые будут сериализованы (user, items).
+        - fields: Поля модели, которые будут сериализованы (user, items,
+        total_quantity, total_price).
         """
 
         model = Cart
         fields = SerializersCfg.CART_SERIALIZER_META_FIELDS
+
+    @staticmethod
+    def get_total_quantity(obj):
+        """
+        Возвращает общее количество товаров в корзине.
+
+        Параметры:
+        - obj (Cart): Объект корзины.
+
+        Возвращает:
+        - int: Общее количество товаров в корзине.
+        """
+        return sum(item.quantity for item in obj.items.all())
+
+    @staticmethod
+    def get_total_price(obj):
+        """
+        Возвращает общую стоимость товаров в корзине.
+
+        Параметры:
+        - obj (Cart): Объект корзины.
+
+        Возвращает:
+        - float: Общая стоимость товаров в корзине.
+        """
+        return sum(
+            item.product.price * item.quantity for item in obj.items.all()
+        )
