@@ -193,7 +193,7 @@ class CartViewSet(viewsets.ViewSet):
     @swagger_auto_schema(
         request_body=CartItemSerializer,
     )
-    @action(detail=False, methods=["patch"])
+    @action(detail=False, methods=ViewsCfg.UPDATE_ITEM_HTTP_METHODS)
     def update_item(self, request):
         """
         Обновляет количество товара в корзине текущего пользователя.

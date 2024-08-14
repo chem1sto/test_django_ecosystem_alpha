@@ -175,8 +175,9 @@ class SerializersCfg:
 class ViewsCfg:
     """Настройки для представлений приложения api."""
 
-    ADD_ITEM_HTTP_METHODS = ["post"]
-    REMOVE_ITEM_HTTP_METHODS = ["delete"]
+    ADD_ITEM_HTTP_METHODS = ("post",)
+    REMOVE_ITEM_HTTP_METHODS = ("delete",)
+    UPDATE_ITEM_HTTP_METHODS = ("patch",)
     PRODUCT = "product"
     QUANTITY = "quantity"
     QUANTITY_DEFAULT_VALUE = 1
