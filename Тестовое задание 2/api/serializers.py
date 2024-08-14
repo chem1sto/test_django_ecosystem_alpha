@@ -122,8 +122,10 @@ class CartItemSerializer(serializers.ModelSerializer):
     - quantity: Количество продукта в корзине.
     """
 
-    product = serializers.CharField(source="product.title")
-    quantity = serializers.IntegerField(default=1)
+    product = serializers.CharField(source=SerializersCfg.PRODUCT_TITLE)
+    quantity = serializers.IntegerField(
+        default=SerializersCfg.QUANTITY_DEFAULT
+    )
 
     class Meta:
         """
@@ -136,6 +138,29 @@ class CartItemSerializer(serializers.ModelSerializer):
 
         model = CartItem
         fields = SerializersCfg.CART_ITEM_SERIALIZER_META_FIELDS
+
+
+class ShortCartItemSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели CartItem.
+
+    Поля:
+    - product: Название продукта.
+    """
+
+    product = serializers.CharField(source=SerializersCfg.PRODUCT_TITLE)
+
+    class Meta:
+        """
+        Мета-класс для ShortCartItemSerializer.
+
+        Атрибуты:
+        - model: Модель CartItem.
+        - fields: Поля модели, которые будут сериализованы (product,).
+        """
+
+        model = CartItem
+        fields = SerializersCfg.SHORT_CART_ITEM_SERIALIZER_META_FIELDS
 
 
 class CartSerializer(serializers.ModelSerializer):

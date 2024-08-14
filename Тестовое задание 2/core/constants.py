@@ -151,6 +151,8 @@ class ProductSubCategoryCfg:
 class SerializersCfg:
     """Настройки для сериалайзеров приложения api."""
 
+    PRODUCT_TITLE = "product.title"
+    QUANTITY_DEFAULT = 1
     PRODUCT_SUBCATEGORY_SERIALIZER_META_FIELDS = ("title", "slug")
     PRODUCT_CATEGORY_SERIALIZER_META_FIELDS = (
         "title",
@@ -166,4 +168,19 @@ class SerializersCfg:
         "images",
     )
     CART_ITEM_SERIALIZER_META_FIELDS = ("product", "quantity")
+    SHORT_CART_ITEM_SERIALIZER_META_FIELDS = ("product",)
     CART_SERIALIZER_META_FIELDS = ("user", "items")
+
+
+class ViewsCfg:
+    """Настройки для представлений приложения api."""
+
+    ADD_ITEM_HTTP_METHODS = ["post"]
+    REMOVE_ITEM_HTTP_METHODS = ["delete"]
+    PRODUCT = "product"
+    QUANTITY = "quantity"
+    QUANTITY_DEFAULT_VALUE = 1
+    GET_PRODUCT_VALIDATION_ERROR = (
+        "Продукта с наименованием {product_title} не существует."
+    )
+    CART_ITEM_VALIDATION_ERROR = "Элемент корзины {product} не существует."

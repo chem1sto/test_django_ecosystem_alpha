@@ -6,8 +6,9 @@ from api.serializers import (
     CartSerializer,
     ProductCategorySerializer,
     ProductSerializer,
+    ShortCartItemSerializer,
 )
-from core.constants import ProductSubCategoryCfg
+from core.constants import ProductSubCategoryCfg, ViewsCfg
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -64,7 +65,7 @@ class CartViewSet(viewsets.ViewSet):
 
     permission_classes = (IsAuthenticated,)
 
-    def get_object(self):
+    def get_queryset(self):
         """
         Возвращает корзину текущего пользователя.
 
@@ -82,73 +83,112 @@ class CartViewSet(viewsets.ViewSet):
         Возвращает:
             Response: Сериализованное содержимое корзины.
         """
-        cart = self.get_object()
+        cart = self.get_queryset()
         serializer = CartSerializer(cart)
         return Response(serializer.data)
+
+    @staticmethod
+    def get_product(product_title):
+        """
+        Возвращает продукт по его наименованию.
+
+        Параметры:
+            product_title (str): Наименование продукта.
+
+        Возвращает:
+            Product: Объект продукта.
+
+        Вызывает ошибку:
+            ValidationError: Если продукт с указанным наименованием не
+        существует.
+        """
+        try:
+            return Product.objects.get(title=product_title)
+        except Product.DoesNotExist:
+            raise ValidationError(
+                detail=ViewsCfg.GET_PRODUCT_VALIDATION_ERROR.format(
+                    product_title=product_title
+                ),
+                code=status.HTTP_404_NOT_FOUND,
+            )
+
+    @staticmethod
+    def get_cart_item(cart, product):
+        """
+        Возвращает элемент корзины по корзине и продукту.
+
+        Параметры:
+            cart (Cart): Корзина пользователя.
+            product (Product): Продукт.
+
+        Возвращает:
+            CartItem: Элемент корзины.
+
+        Вызывает ошибку:
+            ValidationError: Если элемент корзины с указанным продуктом не
+        существует.
+        """
+        try:
+            return CartItem.objects.get(cart=cart, product=product)
+        except CartItem.DoesNotExist:
+            raise ValidationError(
+                detail=ViewsCfg.CART_ITEM_VALIDATION_ERROR.format(
+                    product=product.title
+                ),
+                code=status.HTTP_404_NOT_FOUND,
+            )
 
     @swagger_auto_schema(
         request_body=CartItemSerializer,
     )
-    @action(detail=False, methods=["post"])
+    @action(detail=False, methods=ViewsCfg.ADD_ITEM_HTTP_METHODS)
     def add_item(self, request):
         """
         Добавляет товар в корзину текущего пользователя.
 
         Параметры запроса:
-        - product: Название продукта.
+        - product: Наименование продукта.
         - quantity: Количество продукта (по умолчанию 1).
 
         Возвращает:
             Response: Сериализованное содержимое корзины после добавления
         товара.
-
-        Возбуждает:
-            ValidationError: Если продукт с указанным названием не существует.
         """
-        cart = self.get_object()
-        product_title = request.data.get("product")
-        try:
-            product = Product.objects.get(title=product_title)
-        except Product.DoesNotExist:
-            raise ValidationError(
-                f"Product with title {product_title} does not exist."
-            )
-        quantity = request.data.get("quantity", 1)
+        product = self.get_product(request.data.get(ViewsCfg.PRODUCT))
+        cart = self.get_queryset()
         cart_item, created = CartItem.objects.get_or_create(
             cart=cart, product=product
         )
-        cart_item.quantity += int(quantity)
+        cart_item.quantity += int(
+            request.data.get(
+                ViewsCfg.QUANTITY, ViewsCfg.QUANTITY_DEFAULT_VALUE
+            )
+        )
         cart_item.save()
         return Response(CartSerializer(cart).data)
 
     @swagger_auto_schema(
-        request_body=CartItemSerializer,
+        request_body=ShortCartItemSerializer,
     )
-    @action(detail=False, methods=["delete"])
+    @action(detail=False, methods=ViewsCfg.REMOVE_ITEM_HTTP_METHODS)
     def remove_item(self, request):
         """
         Удаляет товар из корзины текущего пользователя.
 
         Параметры запроса:
-        - product_id: Идентификатор продукта.
+        - product: Наименование продукта.
 
         Возвращает:
             Response: Сериализованное содержимое корзины после удаления товара.
-
-        Вызывает ошибку:
-            Response: Если товар не найден, возвращает статус 404.
         """
-        cart = self.get_object()
-        product_id = request.data.get("product_id")
-        try:
-            cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
-            cart_item.delete()
-            serializer = CartSerializer(cart)
-            return Response(serializer.data)
-        except CartItem.DoesNotExist:
-            return Response(
-                {"detail": "Item not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+        cart = self.get_queryset()
+        product = self.get_product(
+            product_title=request.data.get(ViewsCfg.PRODUCT)
+        )
+        cart_item = self.get_cart_item(cart=cart, product=product)
+        cart_item.delete()
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         request_body=CartItemSerializer,
@@ -159,26 +199,18 @@ class CartViewSet(viewsets.ViewSet):
         Обновляет количество товара в корзине текущего пользователя.
 
         Параметры запроса:
-        - product_id: Идентификатор продукта.
+        - product: Наименование продукта.
         - quantity: Новое количество продукта.
 
         Возвращает:
             Response: Сериализованное содержимое корзины после обновления
         количества товара.
-
-        Вызывает ошибку:
-            Response: Если товар не найден, возвращает статус 404.
         """
-        cart = self.get_object()
-        product_id = request.data.get("product_id")
-        quantity = request.data.get("quantity")
-        try:
-            cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
-            cart_item.quantity = quantity
-            cart_item.save()
-            serializer = CartSerializer(cart)
-            return Response(serializer.data)
-        except CartItem.DoesNotExist:
-            return Response(
-                {"detail": "Item not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+        cart = self.get_queryset()
+        product = self.get_product(request.data.get(ViewsCfg.PRODUCT))
+        cart_item = self.get_cart_item(cart=cart, product=product)
+        quantity = request.data.get(ViewsCfg.QUANTITY)
+        cart_item.quantity = quantity
+        cart_item.save()
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
