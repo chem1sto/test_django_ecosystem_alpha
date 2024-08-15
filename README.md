@@ -42,8 +42,6 @@
 - Python
 - Django
 - Django Rest Framework
-- Djoser
-- Simple JWT
 - drf-yasg
 
 ## Как запустить проект Django из тестового задания 2
@@ -81,14 +79,26 @@
     DEBUG="True или False"
     ALLOWED_HOSTS="IP (домен) вашего сервера"
     ```
-6. Для запуска проекта перейдите в папку с файлом manage.py и выполните команды:
+6. Перейдите в папку с файлом manage.py и выполните команды для создания файлов
+миграций, создания таблиц в БД и сбора статических файлов проекта:
+    ```bash
+    cd ../test_django_ecosystem_alpha/'Тестовое задание 2'/src/ &&
+    python manage.py makemigrations &&
+    python manage.py migrate &&
+    python manage.py collectstatic --noinput
+    ```
+7. Создайте суперпользователя для работы с админ-панелью:
+    ```bash
+    python manage.py createsuperuser
+    ```
+8. Для запуска проекта перейдите в папку с файлом manage.py и выполните
+команды:
    ```bash
-   cd ../test_django_ecosystem_alpha/'Тестовое задание 2'/src/ &&
-   python manage.py makemigrations &&
-   python manage.py migrate &&
-   python manage.py collectstatic --noinput
    python manage.py runserver
    ```
+9. Админ-панель станет доступна по ссылке: http://127.0.0.1:8000/admin/
+10. Автодокументация Swagger станет доступна по ссылкам: http://127.0.0.1:8000/swagger/
+11. Автодокументация Redoc станет доступна по ссылкам: http://127.0.0.1:8000/redoc/
 
 ## Автор
 [Васильев Владимир](https://github.com/chem1sto)
