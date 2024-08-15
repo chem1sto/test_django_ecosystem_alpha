@@ -27,8 +27,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
     Кастомное представление для получения аутентификационного токена.
 
     Это представление расширяет ObtainAuthToken для возврата токена вместе с
-    именем пользователя
-    аутентифицированного пользователя.
+    именем пользователя.
     """
 
     def post(self, request: Request, *args, **kwargs) -> Response:
