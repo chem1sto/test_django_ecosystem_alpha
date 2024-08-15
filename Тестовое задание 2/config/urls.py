@@ -26,7 +26,7 @@ schema_view = get_schema_view(
         title="Django Ecosystem Alpha",
         default_version="v1",
         description=(
-            "Документация для приложений проекта " "django_ecosystem_alpha"
+            "Документация для приложений проекта django_ecosystem_alpha"
         ),
         contact=openapi.Contact(email="admin@mymail.ru"),
         license=openapi.License(name="MIT license"),

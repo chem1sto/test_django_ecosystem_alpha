@@ -11,12 +11,44 @@ from api.serializers import (
 from core.constants import ProductSubCategoryCfg, ViewsCfg
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from store.models import Cart, CartItem, Product, ProductCategory
+
+
+class CustomObtainAuthToken(ObtainAuthToken):
+    """
+    Кастомное представление для получения аутентификационного токена.
+
+    Это представление расширяет ObtainAuthToken для возврата токена вместе с
+    именем пользователя
+    аутентифицированного пользователя.
+    """
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Обработка POST-запросов для получения аутентификационного токена.
+
+        Параметры:
+            request (HttpRequest): Входящий HTTP-запрос.
+            *args: Список аргументов переменной длины.
+            **kwargs: Произвольные именованные аргументы.
+
+        Возвращает:
+            Response: JSON-ответ, содержащий аутентификационный токен и имя
+        пользователя
+        """
+        response = super(CustomObtainAuthToken, self).post(
+            request, *args, **kwargs
+        )
+        token = Token.objects.get(key=response.data["token"])
+        return Response({"token": token.key, "username": token.user.username})
 
 
 class ProductCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -61,9 +93,10 @@ class CartViewSet(viewsets.ViewSet):
     - удаление товара из корзины;
     - обновление количества товара в корзине.
 
-    Требуется аутентификация пользователя.
+    Требуется аутентификация пользователя по токену.
     """
 
+    authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self) -> Cart:
