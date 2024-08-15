@@ -1,5 +1,7 @@
 """Константы и настройки для моделей проекта."""
 REQUEST = "request"
+TOKEN = "token"
+USERNAME = "username"
 
 
 class AdminStoreCfg:

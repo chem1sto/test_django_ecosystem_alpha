@@ -8,7 +8,7 @@ from api.serializers import (
     ProductSerializer,
     ShortCartItemSerializer,
 )
-from core.constants import ProductSubCategoryCfg, ViewsCfg
+from core.constants import TOKEN, USERNAME, ProductSubCategoryCfg, ViewsCfg
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.authentication import TokenAuthentication
@@ -46,8 +46,8 @@ class CustomObtainAuthToken(ObtainAuthToken):
         response = super(CustomObtainAuthToken, self).post(
             request, *args, **kwargs
         )
-        token = Token.objects.get(key=response.data["token"])
-        return Response({"token": token.key, "username": token.user.username})
+        token = Token.objects.get(key=response.data[TOKEN])
+        return Response({TOKEN: token.key, USERNAME: token.user.username})
 
 
 class ProductCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
