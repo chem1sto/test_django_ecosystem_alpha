@@ -95,7 +95,7 @@ class CartViewSet(viewsets.ViewSet):
     Требуется аутентификация пользователя по токену.
     """
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self) -> Cart:
